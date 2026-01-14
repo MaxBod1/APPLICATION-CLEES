@@ -1,0 +1,479 @@
+/* ============================================
+   STYLES RÉPERTOIRE - Version 2.1.7
+   ============================================ */
+
+/* Séparateur "OU" pour formulaires */
+.form-separator {
+    text-align: center;
+    margin: 25px 0;
+    position: relative;
+}
+
+.form-separator::before,
+.form-separator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #ddd;
+}
+
+.form-separator::before {
+    left: 0;
+}
+
+.form-separator::after {
+    right: 0;
+}
+
+.form-separator span {
+    background: white;
+    padding: 0 15px;
+    color: #999;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Container auto-complétion */
+.autocomplete-container {
+    display: flex;
+    gap: 10px;
+    position: relative;
+}
+
+.autocomplete-container input {
+    flex: 1;
+}
+
+.btn-repertoire-icon {
+    padding: 12px 18px;
+    background: #52a788;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.btn-repertoire-icon:hover {
+    background: #3d8a6a;
+    transform: scale(1.05);
+}
+
+/* Dropdown suggestions */
+.suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 50px;
+    background: white;
+    border: 2px solid #52a788;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    margin-top: 2px;
+}
+
+.suggestions-dropdown.active {
+    display: block;
+}
+
+.suggestion-item {
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+    background: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-entreprise {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.suggestion-person {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.suggestion-contact {
+    font-size: 13px;
+    color: #999;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.suggestion-contact span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Section action répertoire */
+.repertoire-action {
+    margin: 25px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #52a788;
+}
+
+.repertoire-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #666;
+}
+
+.info-icon {
+    font-size: 18px;
+}
+
+.info-text {
+    line-height: 1.4;
+}
+
+/* Bouton enregistrer répertoire */
+.btn-repertoire-save {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #52a788;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-repertoire-save:hover {
+    background: #3d8a6a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(82, 167, 136, 0.3);
+}
+
+.btn-repertoire-save .btn-icon {
+    font-size: 18px;
+}
+
+/* États du bouton */
+.btn-repertoire-save.already-saved {
+    background: #28a745;
+    cursor: default;
+}
+
+.btn-repertoire-save.already-saved:hover {
+    transform: none;
+    background: #28a745;
+}
+
+.btn-repertoire-save.just-saved {
+    background: #28a745;
+    animation: successPulse 0.5s ease;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.btn-repertoire-save:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Message de statut */
+.repertoire-status {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: none;
+}
+
+.repertoire-status.show {
+    display: block;
+}
+
+.repertoire-status.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.repertoire-status.info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.repertoire-status.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Bouton Répertoire sur dashboard */
+.btn-repertoire {
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+    color: white;
+}
+
+.btn-repertoire:hover {
+    background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
+}
+
+/* Page Répertoire */
+.repertoire-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.repertoire-search-bar {
+    flex: 1;
+    min-width: 300px;
+}
+
+.repertoire-search-bar input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.repertoire-search-bar input:focus {
+    outline: none;
+    border-color: #52a788;
+}
+
+.repertoire-stats {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #52a788;
+    font-size: 1.1rem;
+}
+
+.repertoire-list {
+    display: grid;
+    gap: 20px;
+}
+
+/* Carte contact */
+.contact-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transform: translateY(-3px);
+}
+
+.contact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.contact-entreprise {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.2rem;
+    flex: 1;
+}
+
+.contact-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.contact-actions .btn-icon {
+    background: #f8f9fa;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.contact-actions .btn-icon:hover {
+    background: #52a788;
+    transform: scale(1.1);
+}
+
+.contact-body {
+    display: grid;
+    gap: 10px;
+}
+
+.contact-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.contact-info {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.contact-info span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.contact-stats {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.contact-stats span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Modal contact */
+#modal-contact .modal-content {
+    max-width: 600px;
+}
+
+#modal-contact h2 {
+    color: #52a788;
+}
+
+#modal-contact .form-group {
+    margin-bottom: 20px;
+}
+
+#modal-contact .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+}
+
+#modal-contact .form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+#modal-contact .form-control:focus {
+    outline: none;
+    border-color: #52a788;
+}
+
+#modal-contact textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .repertoire-header {
+        flex-direction: column;
+    }
+    
+    .repertoire-search-bar {
+        min-width: 100%;
+    }
+    
+    .contact-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .contact-actions {
+        align-self: flex-start;
+    }
+    
+    .suggestions-dropdown {
+        right: 0;
+    }
+    
+    .autocomplete-container {
+        flex-direction: column;
+    }
+    
+    .btn-repertoire-icon {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-card {
+        padding: 15px;
+    }
+    
+    .contact-entreprise {
+        font-size: 1rem;
+    }
+    
+    .contact-name {
+        font-size: 1rem;
+    }
+    
+    .contact-info,
+    .contact-stats {
+        font-size: 0.85rem;
+        gap: 10px;
+    }
+}

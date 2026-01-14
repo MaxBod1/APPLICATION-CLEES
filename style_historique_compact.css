@@ -1,0 +1,121 @@
+/* ============================================
+   HISTORIQUE COMPACT (ACCORDÉON)
+   ============================================ */
+
+.history-card-compact {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.history-card-compact:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+/* En-tête compact cliquable */
+.history-header-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.history-header-compact:hover {
+    background: #f8f9fa;
+}
+
+.history-main-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.history-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.history-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+}
+
+.history-primary strong {
+    color: #333;
+    font-size: 1rem;
+}
+
+.history-separator {
+    color: #ccc;
+    font-weight: normal;
+}
+
+.history-exlocataire {
+    color: #52a788;
+    font-weight: 500;
+}
+
+.history-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.toggle-icon {
+    font-size: 1rem;
+    color: #52a788;
+    transition: transform 0.3s ease;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.toggle-icon.open {
+    transform: rotate(180deg);
+}
+
+/* Détails cachés */
+.history-details {
+    padding: 0 20px 20px 20px;
+    border-top: 1px solid #f0f0f0;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .history-primary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .history-separator {
+        display: none;
+    }
+    
+    .history-header-compact {
+        padding: 15px;
+    }
+    
+    .history-details {
+        padding: 0 15px 15px 15px;
+    }
+}

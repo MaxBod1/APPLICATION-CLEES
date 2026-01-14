@@ -1,0 +1,244 @@
+/* ============================================
+   STYLES MODERNES HEADER - BARRE VERTE FINE
+   Version 2.6.22 - Alignement Vertical Parfait
+   18 décembre 2025
+   ============================================ */
+
+/* Header moderne - Version fine et élégante */
+.header {
+    margin-bottom: 25px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    padding: 10px 20px;  /* Ultra-fin : tout aligné sur une ligne */
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 3px 10px rgba(76, 175, 80, 0.25);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    min-height: 60px;  /* Hauteur minimale pour alignement des boutons */
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;  /* 3 colonnes équilibrées */
+    align-items: center;
+    gap: 20px;
+}
+
+/* Effet de brillance subtil */
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.header:hover::before {
+    left: 100%;
+}
+
+/* Titre du header - Centré dans la grille */
+.header h1 {
+    font-size: 1.6rem;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    text-align: center;
+    grid-column: 2;  /* Colonne du milieu */
+    white-space: nowrap;
+}
+
+/* Conteneur des boutons de navigation - Colonne gauche */
+.header .header-buttons {
+    display: flex;
+    gap: 10px;
+    grid-column: 1;  /* Colonne de gauche */
+    justify-content: flex-start;
+    align-items: center;  /* Alignement vertical des boutons */
+    align-self: center;  /* Centrage vertical dans la cellule de grille */
+}
+
+/* Styles communs pour tous les boutons du header */
+.header .back-btn,
+.header .home-btn,
+.header .settings-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 0 20px;  /* Padding horizontal seulement */
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    min-width: 100px;
+    text-align: center;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;  /* Hauteur fixe identique */
+    line-height: 40px;  /* Line-height égal à la hauteur pour centrage parfait */
+    box-sizing: border-box;  /* Border-box pour calcul uniforme */
+    vertical-align: middle;  /* Alignement vertical des emojis */
+}
+
+.header .back-btn:hover,
+.header .home-btn:hover,
+.header .settings-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.header .back-btn:active,
+.header .home-btn:active,
+.header .settings-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtitle (si présent) */
+.header .subtitle {
+    font-size: 0.9rem;
+    opacity: 0.95;
+    color: #ffffff;
+    margin-top: 4px;
+    font-weight: 400;
+    grid-column: 2;
+    text-align: center;
+}
+
+/* Header sans bouton settings - Ajustement grille */
+.header:not(:has(.settings-btn)) {
+    grid-template-columns: auto 1fr;  /* 2 colonnes seulement */
+}
+
+.header:not(:has(.settings-btn)) h1 {
+    grid-column: 2;
+    text-align: center;
+}
+
+/* Header sans boutons du tout (page d'accueil) */
+.header:not(:has(.header-buttons)):not(:has(.settings-btn)) {
+    grid-template-columns: 1fr;  /* 1 colonne seulement */
+    justify-items: center;
+}
+
+.header:not(:has(.header-buttons)):not(:has(.settings-btn)) h1 {
+    grid-column: 1;
+}
+
+/* Bouton settings dans le header - Positionnement colonne droite */
+.header .settings-btn {
+    grid-column: 3;  /* Colonne de droite */
+    justify-self: flex-end;
+    align-self: center;  /* Centrage vertical dans la cellule de grille */
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 15px;
+        border-radius: 10px;
+        min-height: 90px;
+        grid-template-columns: 1fr;  /* Une seule colonne sur mobile */
+        grid-template-rows: auto auto;
+        gap: 10px;
+    }
+    
+    .header h1 {
+        font-size: 1.4rem;
+        grid-column: 1;
+        grid-row: 2;
+        text-align: center;
+    }
+    
+    .header .header-buttons {
+        grid-column: 1;
+        grid-row: 1;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .header .back-btn,
+    .header .home-btn,
+    .header .settings-btn {
+        padding: 0 16px;  /* Padding horizontal seulement */
+        font-size: 0.85rem;
+        min-width: 90px;
+        height: 36px;  /* Hauteur identique */
+        line-height: 1;
+        box-sizing: border-box;
+    }
+    
+    .header .settings-btn {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: center;
+    }
+    
+    /* Avec header-buttons et settings-btn */
+    .header:has(.header-buttons):has(.settings-btn) {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+    }
+    
+    .header:has(.header-buttons):has(.settings-btn) .header-buttons {
+        justify-self: start;
+    }
+    
+    .header:has(.header-buttons):has(.settings-btn) .settings-btn {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+    
+    .header:has(.header-buttons):has(.settings-btn) h1 {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+}
+
+/* Responsive - Très petit écran */
+@media (max-width: 480px) {
+    .header .back-btn,
+    .header .home-btn,
+    .header .settings-btn {
+        padding: 0 12px;  /* Padding horizontal seulement */
+        font-size: 0.8rem;
+        min-width: 80px;
+        height: 32px;  /* Hauteur identique */
+        line-height: 1;
+        box-sizing: border-box;
+    }
+    
+    .header h1 {
+        font-size: 1.2rem;
+        margin-top: 38px;  /* Plus d'espace sur petit écran */
+    }
+}
+
+/* Animation d'entrée */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    animation: slideDown 0.4s ease;
+}
