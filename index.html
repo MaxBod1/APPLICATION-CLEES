@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Clés - Agence Immobilière</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard-modern.css">
+    <link rel="stylesheet" href="modal-remise-details.css">
+    <link rel="stylesheet" href="remises-search-styles.css">
+    <link rel="stylesheet" href="filters-modern-styles.css">
+    <link rel="stylesheet" href="header-modern-styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Page de sélection d'équipe -->
+        <div id="team-selection" class="page active">
+            <div class="header">
+                <h1>🔑 Gestion des Clés</h1>
+            </div>
+            
+            <!-- Barre de recherche rapide (plus compacte) -->
+            <div class="quick-search-section compact">
+                <div class="quick-search-bar">
+                    <input type="text" id="quick-search-input" placeholder="🔍 Rechercher une clé par nom, entreprise, ex-locataire, adresse...">
+                </div>
+                <div id="quick-search-results" class="quick-search-results"></div>
+            </div>
+            
+            <!-- Bulles des équipes -->
+            <div class="team-cards">
+                <div class="team-card" onclick="selectTeam('travaux')">
+                    <div class="team-icon">🔨</div>
+                    <h2>Travaux</h2>
+                </div>
+                <div class="team-card" onclick="selectTeam('commercialisation')">
+                    <div class="team-icon">🏢</div>
+                    <h2>Commercialisation</h2>
+                </div>
+                <div class="team-card" onclick="selectTeam('gestion')">
+                    <div class="team-icon">📋</div>
+                    <h2>Gestion</h2>
+                </div>
+            </div>
+
+            <!-- Boutons d'accès rapide -->
+            <div class="quick-access-buttons">
+                <button class="btn-quick-access" onclick="showHistoryFromHome()">
+                    📚 Historique Complet
+                </button>
+                <button class="btn-quick-access" onclick="showPage('repertoire')">
+                    📇 Répertoire de Contacts
+                </button>
+                <button class="btn-quick-access btn-remises-definitives" onclick="showRemisesHistoriqueFromHome()">
+                    📦 Clés Parties Définitivement
+                </button>
+            </div>
+            
+            <!-- Tableau de bord général -->
+            <div class="global-dashboard">
+                <h3>📊 Vue d'Ensemble Globale</h3>
+                <p class="dashboard-subtitle">Cliquez sur une carte pour voir les détails</p>
+                <div class="global-stats-grid">
+                    <div class="global-stat-card clickable" onclick="showKeysListByCategory('all')">
+                        <div class="global-stat-number" id="global-keys-out">0</div>
+                        <div class="global-stat-label">Clés en circulation</div>
+                        <div class="card-hint">👆 Cliquer pour voir</div>
+                    </div>
+                    <div class="global-stat-card warning clickable" onclick="showKeysListByCategory('late1')">
+                        <div class="global-stat-number" id="global-keys-late-1">0</div>
+                        <div class="global-stat-label">Retard 1 jour</div>
+                        <div class="card-hint">👆 Cliquer pour voir</div>
+                    </div>
+                    <div class="global-stat-card alert clickable" onclick="showKeysListByCategory('late3')">
+                        <div class="global-stat-number" id="global-keys-late-3">0</div>
+                        <div class="global-stat-label">Retard 3+ jours</div>
+                        <div class="card-hint">👆 Cliquer pour voir</div>
+                    </div>
+                    <div class="global-stat-card critical clickable" onclick="showKeysListByCategory('late7')">
+                        <div class="global-stat-number" id="global-keys-late-7">0</div>
+                        <div class="global-stat-label">Retard 7+ jours</div>
+                        <div class="card-hint">👆 Cliquer pour voir</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page de sélection d'utilisateur -->
+        <div id="user-selection" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('team-selection')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1 id="team-name">Équipe</h1>
+                <button class="settings-btn" onclick="showTeamSettings()">⚙️ Gérer</button>
+            </div>
+            
+            <div id="user-buttons" class="user-grid"></div>
+        </div>
+
+        <!-- Page de gestion des profils -->
+        <div id="team-settings" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('user-selection')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1>⚙️ Gestion des Profils</h1>
+                <p class="subtitle" id="settings-team-name">Équipe</p>
+            </div>
+
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h3>➕ Ajouter un Nouveau Profil</h3>
+                    <div class="add-profile-form">
+                        <input type="text" id="new-profile-name" placeholder="Prénom du nouveau membre..." maxlength="30">
+                        <button class="btn btn-success" onclick="addNewProfile()">✅ Ajouter</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>👥 Membres de l'Équipe</h3>
+                    <div id="team-members-list" class="team-members-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau de bord principal -->
+        <div id="dashboard" class="page">
+            <!-- En-tête modernisé avec avatar et badge -->
+            <div class="dashboard-header-modern">
+                <div class="user-profile-card">
+                    <div class="user-avatar">
+                        <span class="avatar-icon">👤</span>
+                    </div>
+                    <div class="user-details">
+                        <h2 class="user-name" id="current-user"></h2>
+                        <span class="user-team-badge" id="current-team-badge"></span>
+                    </div>
+                </div>
+                <button class="logout-btn-modern" onclick="logout()">
+                    <span class="logout-icon">🚪</span>
+                    <span>Déconnexion</span>
+                </button>
+            </div>
+
+            <!-- Titre avec ligne décorative -->
+            <div class="dashboard-title-section">
+                <h1 class="dashboard-title">
+                    <span class="title-icon">📊</span>
+                    <span>Tableau de Bord</span>
+                </h1>
+                <p class="dashboard-subtitle">Vue d'ensemble de vos clés en circulation</p>
+            </div>
+
+            <!-- Statistiques modernisées avec icônes et gradients -->
+            <div class="stats-grid-modern">
+                <div class="stat-card-modern" onclick="showFilteredKeys('all')" data-stat-type="all">
+                    <div class="stat-icon-container">
+                        <span class="stat-icon">🔑</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number-modern" id="keys-out">0</div>
+                        <div class="stat-label-modern">Clés en circulation</div>
+                    </div>
+                    <div class="stat-arrow">→</div>
+                </div>
+                
+                <div class="stat-card-modern warning" onclick="showFilteredKeys('late-1')" data-stat-type="late-1">
+                    <div class="stat-icon-container warning">
+                        <span class="stat-icon">⚠️</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number-modern" id="keys-late-1">0</div>
+                        <div class="stat-label-modern">Retard 1 jour</div>
+                    </div>
+                    <div class="stat-arrow">→</div>
+                </div>
+                
+                <div class="stat-card-modern alert" onclick="showFilteredKeys('late-3')" data-stat-type="late-3">
+                    <div class="stat-icon-container alert">
+                        <span class="stat-icon">🔴</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number-modern" id="keys-late-3">0</div>
+                        <div class="stat-label-modern">Retard 3+ jours</div>
+                    </div>
+                    <div class="stat-arrow">→</div>
+                </div>
+                
+                <div class="stat-card-modern critical" onclick="showFilteredKeys('late-7')" data-stat-type="late-7">
+                    <div class="stat-icon-container critical">
+                        <span class="stat-icon">🚨</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number-modern" id="keys-late-7">0</div>
+                        <div class="stat-label-modern">Retard 7+ jours</div>
+                    </div>
+                    <div class="stat-arrow">→</div>
+                </div>
+            </div>
+
+            <!-- ACTIONS PRINCIPALES (Départ et Retour) -->
+            <div class="dashboard-section">
+                <h3 class="section-title-main">
+                    <span class="section-icon">⚡</span>
+                    <span>Actions Principales</span>
+                </h3>
+                <div class="primary-actions-grid">
+                    <button class="action-btn-large primary" onclick="showPage('depart-cles')">
+                        <div class="action-btn-icon-large">📤</div>
+                        <div class="action-btn-content-large">
+                            <div class="action-btn-title-large">Départ de Clés</div>
+                            <div class="action-btn-desc-large">Enregistrer une nouvelle sortie de clés</div>
+                        </div>
+                        <div class="action-arrow-large">→</div>
+                    </button>
+                    
+                    <button class="action-btn-large success" onclick="showPage('retour-cles')">
+                        <div class="action-btn-icon-large">📥</div>
+                        <div class="action-btn-content-large">
+                            <div class="action-btn-title-large">Retour de Clés</div>
+                            <div class="action-btn-desc-large">Enregistrer le retour de clés</div>
+                        </div>
+                        <div class="action-arrow-large">→</div>
+                    </button>
+                    
+                    <button class="action-btn-large definitif" onclick="showPage('remise-definitive')">
+                        <div class="action-btn-icon-large">📋</div>
+                        <div class="action-btn-content-large">
+                            <div class="action-btn-title-large">Remise Définitive</div>
+                            <div class="action-btn-desc-large">EDL & Prestataires <span id="brouillons-badge" class="brouillons-badge"></span></div>
+                        </div>
+                        <div class="action-arrow-large">→</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AUTRES ACTIONS (Liste, Historique, Répertoire) -->
+            <div class="dashboard-section">
+                <h3 class="section-title-secondary">
+                    <span class="section-icon">📂</span>
+                    <span>Autres Actions</span>
+                </h3>
+                <div class="secondary-actions-grid">
+                    <button class="action-btn-small info" onclick="showPage('liste-cles')">
+                        <div class="action-btn-icon-small">📋</div>
+                        <div class="action-btn-content-small">
+                            <div class="action-btn-title-small">Liste des Clés</div>
+                        </div>
+                    </button>
+                    
+                    <button class="action-btn-small secondary" onclick="showPage('historique')">
+                        <div class="action-btn-icon-small">📚</div>
+                        <div class="action-btn-content-small">
+                            <div class="action-btn-title-small">Historique</div>
+                        </div>
+                    </button>
+                    
+                    <button class="action-btn-small repertoire" onclick="showPage('repertoire')">
+                        <div class="action-btn-icon-small">📇</div>
+                        <div class="action-btn-content-small">
+                            <div class="action-btn-title-small">Répertoire</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Départ de Clés -->
+        <div id="depart-cles" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('dashboard')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1>📤 Départ de Clés</h1>
+            </div>
+
+            <form id="depart-form" class="form-container">
+                <h3>Informations de la personne</h3>
+                
+                <!-- Recherche dans le répertoire -->
+                <div class="form-group">
+                    <label>🔍 Recherche rapide dans le répertoire</label>
+                    <div class="autocomplete-container">
+                        <input type="text" 
+                               id="contact-search-depart" 
+                               class="form-control" 
+                               placeholder="Tapez un nom, prénom ou entreprise..."
+                               autocomplete="off">
+                        <button type="button" class="btn-repertoire-icon" onclick="showPage('repertoire')" title="Ouvrir le répertoire">
+                            📇
+                        </button>
+                        <div id="autocomplete-suggestions-depart" class="suggestions-dropdown"></div>
+                    </div>
+                </div>
+
+                <div class="form-separator">
+                    <span>OU remplir manuellement</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nom *</label>
+                    <input type="text" id="nom" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Prénom *</label>
+                    <input type="text" id="prenom" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Nom de l'entreprise</label>
+                    <input type="text" id="entreprise">
+                </div>
+
+                <div class="form-group">
+                    <label>Téléphone *</label>
+                    <input type="tel" id="telephone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <!-- Bouton enregistrer dans le répertoire -->
+                <div class="repertoire-action">
+                    <div class="repertoire-info">
+                        <span class="info-icon">💡</span>
+                        <span class="info-text">Personne régulière ? Enregistrez-la dans le répertoire pour gagner du temps !</span>
+                    </div>
+                    <button type="button" 
+                            id="btn-save-to-repertoire-depart" 
+                            class="btn-repertoire-save"
+                            onclick="saveCurrentContactToRepertoire('depart')">
+                        <span class="btn-icon">📇</span>
+                        <span class="btn-text">Enregistrer dans le répertoire</span>
+                    </button>
+                    <div id="repertoire-status-depart" class="repertoire-status"></div>
+                </div>
+
+                <h3>Informations du bien</h3>
+
+                <div class="form-group">
+                    <label>Nom de l'ex-locataire *</label>
+                    <input type="text" id="ex-locataire" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse du bien *</label>
+                    <input type="text" id="adresse-bien" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Numéro de référence / Lot</label>
+                    <input type="text" id="reference-lot">
+                </div>
+
+                <div class="form-group">
+                    <label>Date de retour prévue *</label>
+                    <input type="date" id="date-retour" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Notes / Commentaires</label>
+                    <textarea id="commentaires" rows="3"></textarea>
+                </div>
+
+                <h3>✍️ Signature de la personne</h3>
+                
+                <div class="signature-section">
+                    <p class="signature-instruction">Signez dans le cadre ci-dessous avec votre doigt (tactile) ou votre souris :</p>
+                    <div class="signature-container">
+                        <canvas id="signature-canvas-depart" class="signature-canvas"></canvas>
+                    </div>
+                    <div class="signature-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="clearSignature('depart')">
+                            🗑️ Effacer
+                        </button>
+                    </div>
+                    <p class="signature-required-note">* La signature est obligatoire</p>
+                </div>
+
+                <h3>Photo des clés</h3>
+                
+                <div class="photo-section">
+                    <video id="video" autoplay playsinline webkit-playsinline></video>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                    <img id="photo-preview" style="display:none;">
+                    
+                    <div class="photo-buttons">
+                        <button type="button" class="btn btn-info" id="start-camera" onclick="startCamera()">
+                            📷 Démarrer la caméra
+                        </button>
+                        <button type="button" class="btn btn-warning" id="take-photo" onclick="takePhoto()" style="display:none;">
+                            📸 Prendre la photo
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="retake-photo" onclick="retakePhoto()" style="display:none;">
+                            🔄 Reprendre
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">
+                    ✅ Enregistrer le départ
+                </button>
+            </form>
+        </div>
+
+        <!-- Page Retour de Clés -->
+        <div id="retour-cles" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('dashboard')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1>📥 Retour de Clés</h1>
+            </div>
+
+            <div class="search-section">
+                <h3>Rechercher le dossier</h3>
+                
+                <div class="form-group">
+                    <label>Rechercher par nom/prénom</label>
+                    <input type="text" id="search-nom" placeholder="Nom ou prénom...">
+                </div>
+
+                <div class="form-group">
+                    <label>Rechercher par entreprise</label>
+                    <input type="text" id="search-entreprise" placeholder="Nom de l'entreprise...">
+                </div>
+
+                <div class="form-group">
+                    <label>Rechercher par ex-locataire</label>
+                    <input type="text" id="search-locataire" placeholder="Nom de l'ex-locataire...">
+                </div>
+
+                <button class="btn btn-info" onclick="searchKeys()">🔍 Rechercher</button>
+            </div>
+
+            <div id="search-results" class="search-results"></div>
+            
+            <!-- Liste de toutes les clés en circulation -->
+            <div class="all-keys-circulation-section">
+                <h3>📋 Toutes les clés en circulation</h3>
+                <div id="all-keys-circulation-list" class="history-list"></div>
+            </div>
+        </div>
+
+        <!-- Page Liste des Clés Sorties -->
+        <div id="liste-cles" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('dashboard')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1>📋 Liste des Clés Sorties</h1>
+            </div>
+
+            <div class="filter-section-advanced">
+                <h3>🔍 Filtrer les clés sorties</h3>
+                
+                <div class="filter-row">
+                    <div class="filter-item-wide">
+                        <label for="filter-keys-type">Rechercher par</label>
+                        <select id="filter-keys-type" class="form-control" onchange="updateFilterFieldKeys()">
+                            <option value="">-- Choisir un critère --</option>
+                            <option value="person">👤 Personne qui a pris les clés</option>
+                            <option value="entreprise">🏢 Entreprise</option>
+                            <option value="ex-locataire">🏠 Ex-locataire</option>
+                            <option value="adresse">📍 Adresse du bien</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item-wide" id="filter-keys-text-container" style="display: none;">
+                        <label for="filter-keys-text-value">Valeur</label>
+                        <input type="text" id="filter-keys-text-value" class="form-control" placeholder="Saisir le texte à rechercher...">
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="filter-keys-date-type">Filtrer par date</label>
+                        <select id="filter-keys-date-type" class="form-control" onchange="updateDateFieldsKeys()">
+                            <option value="">-- Aucun filtre de date --</option>
+                            <option value="depart">📅 Date de départ</option>
+                            <option value="return-expected">📅 Date de retour prévue</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item" id="filter-keys-date-start-container" style="display: none;">
+                        <label for="filter-keys-date-start">Du</label>
+                        <input type="date" id="filter-keys-date-start" class="form-control">
+                    </div>
+                    
+                    <div class="filter-item" id="filter-keys-date-end-container" style="display: none;">
+                        <label for="filter-keys-date-end">Au</label>
+                        <input type="date" id="filter-keys-date-end" class="form-control">
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="filter-keys-status">Statut</label>
+                        <select id="filter-keys-status" class="form-control">
+                            <option value="">-- Tous --</option>
+                            <option value="ok">✅ Dans les temps</option>
+                            <option value="late1">🟠 Retard 1 jour</option>
+                            <option value="late3">🔴 Retard 3+ jours</option>
+                            <option value="late7">🔴⚡ Retard 7+ jours</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button class="btn btn-info" onclick="filterKeysList()">🔍 Filtrer</button>
+                    <button class="btn btn-secondary" onclick="clearFiltersKeysList()">🔄 Réinitialiser</button>
+                </div>
+            </div>
+
+            <div id="keys-list" class="keys-list"></div>
+        </div>
+
+        <!-- Page Historique -->
+        <div id="historique" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('dashboard')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1>📚 Historique</h1>
+            </div>
+
+            <div class="filter-section-advanced">
+                <h3>🔍 Filtrer l'historique</h3>
+                
+                <div class="filter-row">
+                    <div class="filter-item-wide">
+                        <label for="filter-type">Rechercher par</label>
+                        <select id="filter-type" class="form-control" onchange="updateFilterField()">
+                            <option value="">-- Choisir un critère --</option>
+                            <option value="person">👤 Personne qui a pris les clés</option>
+                            <option value="entreprise">🏢 Entreprise</option>
+                            <option value="ex-locataire">🏠 Ex-locataire</option>
+                            <option value="adresse">📍 Adresse du bien</option>
+                            <option value="returned-person">🔄 Personne qui a ramené</option>
+                            <option value="receptionnaire">🎯 Réceptionné par</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item-wide" id="filter-text-container" style="display: none;">
+                        <label for="filter-text-value">Valeur</label>
+                        <input type="text" id="filter-text-value" class="form-control" placeholder="Saisir le texte à rechercher...">
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label for="filter-date-type">Filtrer par date</label>
+                        <select id="filter-date-type" class="form-control" onchange="updateDateFields()">
+                            <option value="">-- Aucun filtre de date --</option>
+                            <option value="depart">📅 Date de départ</option>
+                            <option value="return">📅 Date de retour</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item" id="filter-date-start-container" style="display: none;">
+                        <label for="filter-date-start">Du</label>
+                        <input type="date" id="filter-date-start" class="form-control">
+                    </div>
+                    
+                    <div class="filter-item" id="filter-date-end-container" style="display: none;">
+                        <label for="filter-date-end">Au</label>
+                        <input type="date" id="filter-date-end" class="form-control">
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button class="btn btn-info" onclick="filterHistoriqueAdvanced()">🔍 Filtrer</button>
+                    <button class="btn btn-secondary" onclick="clearFiltersHistorique()">🔄 Réinitialiser</button>
+                </div>
+            </div>
+
+            <div id="historique-list" class="historique-list"></div>
+        </div>
+
+        <!-- Page Répertoire -->
+        <div id="repertoire" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('dashboard')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1>📇 Répertoire des Contacts</h1>
+            </div>
+
+            <div class="repertoire-header">
+                <div class="repertoire-search-bar">
+                    <input type="text" 
+                           id="repertoire-search" 
+                           class="form-control" 
+                           placeholder="🔍 Rechercher un contact (nom, prénom, entreprise, téléphone, email)..."
+                           oninput="searchRepertoire()">
+                </div>
+                <button class="btn btn-primary" onclick="openAddContactModal()">
+                    ➕ Ajouter un contact
+                </button>
+            </div>
+
+            <div class="repertoire-stats">
+                <span id="repertoire-count">0 contact</span>
+            </div>
+
+            <div id="repertoire-list" class="repertoire-list">
+                <!-- Les contacts seront affichés ici -->
+            </div>
+        </div>
+
+        <!-- Page Remise Définitive -->
+        <div id="remise-definitive" class="page">
+            <div class="header">
+                <div class="header-buttons">
+                    <button class="back-btn" onclick="goBack('dashboard')">← Retour</button>
+                    <button class="home-btn" onclick="showPage('team-selection')">🏠 Accueil</button>
+                </div>
+                <h1>📋 Remise Définitive de Clés</h1>
+            </div>
+
+            <!-- Navigation Brouillons / Nouveau -->
+            <div class="remise-nav">
+                <button class="btn btn-info" onclick="showBrouillonsList()">
+                    📝 Mes Brouillons (<span id="brouillons-count">0</span>)
+                </button>
+                <button class="btn btn-primary" onclick="showRemiseForm('new')">
+                    ➕ Nouvelle Remise
+                </button>
+                <button class="btn btn-secondary" onclick="showRemisesHistorique()">
+                    📚 Historique
+                </button>
+            </div>
+
+            <!-- Liste des Brouillons -->
+            <div id="brouillons-list-view" class="brouillons-container" style="display: none;">
+                <h2>📝 Brouillons en Attente</h2>
+                <div id="brouillons-list">
+                    <!-- Liste des brouillons -->
+                </div>
+            </div>
+
+            <!-- Formulaire de Remise Définitive -->
+            <div id="remise-form-container" class="form-container" style="display: none;">
+                <form id="remise-definitive-form">
+                    <input type="hidden" id="remise-id">
+                    <input type="hidden" id="remise-is-draft">
+
+                    <h3>👤 Informations du Prestataire / Agent EDL</h3>
+                    
+                    <!-- Recherche dans le répertoire -->
+                    <div class="form-group">
+                        <label>🔍 Recherche rapide dans le répertoire</label>
+                        <div class="autocomplete-container">
+                            <input type="text" 
+                                   id="contact-search-remise" 
+                                   class="form-control" 
+                                   placeholder="Tapez un nom, prénom ou entreprise..."
+                                   autocomplete="off">
+                            <button type="button" class="btn-repertoire-icon" onclick="showPage('repertoire')" title="Ouvrir le répertoire">
+                                📇
+                            </button>
+                            <div id="autocomplete-suggestions-remise" class="suggestions-dropdown"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-separator">
+                        <span>OU remplir manuellement</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nom du prestataire *</label>
+                        <input type="text" id="remise-nom" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prénom *</label>
+                        <input type="text" id="remise-prenom" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nom de l'entreprise *</label>
+                        <input type="text" id="remise-entreprise" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Téléphone *</label>
+                        <input type="tel" id="remise-telephone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="remise-email">
+                    </div>
+
+                    <!-- Bouton enregistrer dans le répertoire -->
+                    <div class="repertoire-action">
+                        <div class="repertoire-info">
+                            <span class="info-icon">💡</span>
+                            <span class="info-text">Prestataire régulier ? Enregistrez-le dans le répertoire !</span>
+                        </div>
+                        <button type="button" 
+                                id="btn-save-to-repertoire-remise" 
+                                class="btn-repertoire-save"
+                                onclick="saveCurrentContactToRepertoire('remise')">
+                            <span class="btn-icon">📇</span>
+                            <span class="btn-text">Enregistrer dans le répertoire</span>
+                        </button>
+                        <div id="repertoire-status-remise" class="repertoire-status"></div>
+                    </div>
+
+                    <h3>🏢 Informations du Bien Immobilier</h3>
+
+                    <div class="form-group">
+                        <label>Adresse du bien *</label>
+                        <input type="text" id="remise-adresse-bien" required placeholder="Numéro, rue, code postal, ville">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Référence du lot / Dossier</label>
+                        <input type="text" id="remise-reference-lot" placeholder="Ex: LOT-2024-123">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nom de l'ex-locataire</label>
+                        <input type="text" id="remise-ex-locataire">
+                    </div>
+
+                    <h3>🔑 Éléments Remis</h3>
+
+                    <div class="elements-remis-grid">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="remise-cles-checkbox" onchange="toggleElementQuantity('cles')">
+                                🔑 Clés
+                            </label>
+                            <input type="number" id="remise-cles-qty" min="0" placeholder="Quantité" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="remise-vigik-checkbox" onchange="toggleElementQuantity('vigik')">
+                                📱 Vigik / Badge
+                            </label>
+                            <input type="number" id="remise-vigik-qty" min="0" placeholder="Quantité" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="remise-telecommande-checkbox" onchange="toggleElementQuantity('telecommande')">
+                                🚗 Télécommandes Parking
+                            </label>
+                            <input type="number" id="remise-telecommande-qty" min="0" placeholder="Quantité" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="remise-badge-checkbox" onchange="toggleElementQuantity('badge')">
+                                🎫 Autres Badges
+                            </label>
+                            <input type="number" id="remise-badge-qty" min="0" placeholder="Quantité" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Autres éléments remis</label>
+                        <textarea id="remise-autres-elements" rows="3" placeholder="Ex: Boîte aux lettres, interphone, etc."></textarea>
+                    </div>
+
+                    <h3>📷 Photos des Éléments Remis</h3>
+
+                    <div class="form-group">
+                        <label>Photo des clés, vigik, télécommandes remis *</label>
+                        <div class="photo-info">
+                            <span class="info-icon">💡</span>
+                            <span class="info-text">Prenez une photo de l'ensemble des éléments remis (clés, vigik, télécommandes, badges...)</span>
+                        </div>
+                        <div class="photo-section">
+                            <input type="file" id="remise-photo-decharge" accept="image/*" capture="environment" style="display: none;">
+                            <button type="button" class="btn btn-photo" onclick="document.getElementById('remise-photo-decharge').click()">
+                                📷 Prendre Photo avec Caméra
+                            </button>
+                            <div id="remise-preview-decharge" class="photo-preview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Photo supplémentaire (optionnelle)</label>
+                        <div class="photo-info">
+                            <span class="info-icon">💡</span>
+                            <span class="info-text">Photo complémentaire si nécessaire (autre angle, décharge signée...)</span>
+                        </div>
+                        <div class="photo-section">
+                            <input type="file" id="remise-photo-extra" accept="image/*" capture="environment" style="display: none;">
+                            <button type="button" class="btn btn-photo" onclick="document.getElementById('remise-photo-extra').click()">
+                                📷 Prendre Photo avec Caméra
+                            </button>
+                            <div id="remise-preview-extra" class="photo-preview"></div>
+                        </div>
+                    </div>
+
+                    <h3>✍️ Signature du Prestataire</h3>
+
+                    <div class="form-group">
+                        <label>Signature *</label>
+                        <div class="signature-container">
+                            <canvas id="signature-remise" class="signature-canvas"></canvas>
+                            <button type="button" class="btn btn-secondary btn-clear-signature" onclick="clearSignatureRemise()">
+                                🗑️ Effacer
+                            </button>
+                        </div>
+                    </div>
+
+                    <h3>📝 Informations Complémentaires</h3>
+
+                    <div class="form-group">
+                        <label>Date et heure de remise *</label>
+                        <input type="datetime-local" id="remise-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Commentaires</label>
+                        <textarea id="remise-commentaires" rows="4" placeholder="Remarques, observations, détails particuliers..."></textarea>
+                    </div>
+
+                    <!-- Boutons d'action -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="goBack('dashboard')">
+                            ✕ Annuler
+                        </button>
+                        <button type="button" class="btn btn-warning" onclick="saveBrouillon()">
+                            💾 Enregistrer en Brouillon
+                        </button>
+                        <button type="submit" class="btn btn-success btn-large">
+                            ✅ Valider Définitivement
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Historique des Remises Définitives -->
+            <div id="remises-historique-view" class="historique-container" style="display: none;">
+                <h2>📚 Historique des Remises Définitives</h2>
+                
+                <div class="remises-search-container">
+                    <div class="search-box-modern">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="remises-search" class="search-input-modern" placeholder="Rechercher par adresse, prestataire, entreprise ou référence...">
+                    </div>
+                    
+                    <div class="filter-box-modern">
+                        <span class="filter-icon">👤</span>
+                        <select id="remises-filter-user" class="filter-select-modern">
+                            <option value="all">📋 Tous les profils</option>
+                            <option value="current">👤 Mon profil uniquement</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="remises-historique-list">
+                    <!-- Liste des remises définitives -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmation de retour -->
+        <div id="modal-retour" class="modal">
+            <div class="modal-content">
+                <h2>Confirmer le retour des clés</h2>
+                <div id="modal-details"></div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                    <button class="btn btn-success" onclick="confirmReturn()">✅ Confirmer le retour</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de modification de date de retour -->
+        <div id="modal-edit-date" class="modal">
+            <div class="modal-content">
+                <h2>📅 Modifier la Date de Retour</h2>
+                <div id="edit-date-details" class="edit-date-section">
+                    <div class="form-group">
+                        <label>Date de retour actuelle :</label>
+                        <div id="current-return-date" class="current-date-display"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nouvelle date de retour :</label>
+                        <input type="datetime-local" id="new-return-date" class="date-input">
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeEditDateModal()">Annuler</button>
+                    <button class="btn btn-primary" onclick="saveNewReturnDate()">✅ Enregistrer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal d'affichage des clés par catégorie -->
+        <div id="modal-keys-list" class="modal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h2 id="modal-keys-title">📋 Liste des Clés</h2>
+                    <button class="modal-close-btn" onclick="closeKeysListModal()">✕</button>
+                </div>
+                <div id="modal-keys-content" class="modal-keys-content">
+                    <!-- Contenu dynamique -->
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeKeysListModal()">Fermer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de validation de retour rapide -->
+        <div id="modal-quick-return" class="modal">
+            <div class="modal-content">
+                <h2>✅ Validation du Retour de Clé</h2>
+                
+                <div id="quick-return-key-info" class="return-key-summary">
+                    <!-- Résumé de la clé affiché ici -->
+                </div>
+
+                <div class="return-form">
+                    <h3>👤 Personne qui ramène les clés</h3>
+                    
+                    <!-- Recherche dans le répertoire -->
+                    <div class="form-group">
+                        <label>🔍 Recherche rapide dans le répertoire</label>
+                        <div class="autocomplete-container">
+                            <input type="text" 
+                                   id="contact-search-return" 
+                                   class="form-control" 
+                                   placeholder="Tapez un nom, prénom ou entreprise..."
+                                   autocomplete="off">
+                            <button type="button" class="btn-repertoire-icon" onclick="showPage('repertoire'); closeQuickReturnModal();" title="Ouvrir le répertoire">
+                                📇
+                            </button>
+                            <div id="autocomplete-suggestions-return" class="suggestions-dropdown"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-separator">
+                        <span>OU remplir manuellement</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="return-person-nom">Nom *</label>
+                        <input type="text" id="return-person-nom" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="return-person-prenom">Prénom *</label>
+                        <input type="text" id="return-person-prenom" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="return-person-telephone">Téléphone *</label>
+                        <input type="tel" id="return-person-telephone" class="form-control" required>
+                    </div>
+
+                    <!-- Bouton enregistrer dans le répertoire -->
+                    <div class="repertoire-action">
+                        <div class="repertoire-info">
+                            <span class="info-icon">💡</span>
+                            <span class="info-text">Personne régulière ? Enregistrez-la !</span>
+                        </div>
+                        <button type="button" 
+                                id="btn-save-to-repertoire-return" 
+                                class="btn-repertoire-save"
+                                onclick="saveCurrentContactToRepertoire('return')">
+                            <span class="btn-icon">📇</span>
+                            <span class="btn-text">Enregistrer dans le répertoire</span>
+                        </button>
+                        <div id="repertoire-status-return" class="repertoire-status"></div>
+                    </div>
+
+                    <h3>🎯 Réceptionnaire</h3>
+                    <div class="form-group">
+                        <label for="return-receptionnaire-team">Équipe *</label>
+                        <select id="return-receptionnaire-team" class="form-control" onchange="loadReceptionnaireMembers()">
+                            <option value="">-- Sélectionner une équipe --</option>
+                            <option value="travaux">🔨 Travaux</option>
+                            <option value="commercialisation">🏢 Commercialisation</option>
+                            <option value="gestion">📋 Gestion</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="return-receptionnaire-name">Membre de l'équipe *</label>
+                        <select id="return-receptionnaire-name" class="form-control" disabled>
+                            <option value="">-- D'abord choisir une équipe --</option>
+                        </select>
+                    </div>
+
+                    <h3>📸 Photo des clés rendues (obligatoire)</h3>
+                    <div class="photo-section-required">
+                        <p class="photo-instruction">Prenez une photo des clés pour vérifier la correspondance avec les clés données initialement :</p>
+                        <div class="photo-controls">
+                            <button type="button" id="start-camera-return-complete" class="btn btn-primary" onclick="startCameraReturnComplete()">
+                                📷 Démarrer la caméra
+                            </button>
+                            <video id="video-return-complete" class="photo-preview" autoplay playsinline webkit-playsinline style="display: none;"></video>
+                            <button type="button" id="take-photo-return-complete" class="btn btn-success" onclick="takePhotoReturnComplete()" style="display: none;">
+                                📸 Prendre la photo
+                            </button>
+                            <canvas id="canvas-return-complete" style="display: none;"></canvas>
+                            <img id="photo-preview-return-complete" class="photo-preview" style="display: none;">
+                            <button type="button" id="retake-photo-return-complete" class="btn btn-secondary" onclick="retakePhotoReturnComplete()" style="display: none;">
+                                🔄 Reprendre la photo
+                            </button>
+                        </div>
+                        <p class="photo-required-note">* La photo est obligatoire pour tous les retours</p>
+                    </div>
+
+                    <h3>✍️ Signature de la personne qui ramène</h3>
+                    <div class="signature-section">
+                        <p class="signature-instruction">Signez dans le cadre ci-dessous :</p>
+                        <div class="signature-container">
+                            <canvas id="signature-canvas-return" class="signature-canvas"></canvas>
+                        </div>
+                        <div class="signature-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="clearSignature('return')">
+                                🗑️ Effacer
+                            </button>
+                        </div>
+                        <p class="signature-required-note">* La signature est obligatoire</p>
+                    </div>
+
+                    <!-- Section clés manquantes -->
+                    <h3>⚠️ Vérification des clés</h3>
+                    <div class="missing-keys-section">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="return-missing-keys-checkbox" onchange="toggleMissingKeysSection()">
+                                <span class="checkbox-text">❌ Il manque des clés à la restitution</span>
+                            </label>
+                        </div>
+
+                        <div id="missing-keys-details" class="missing-keys-details" style="display: none;">
+                            <div class="alert-warning">
+                                ⚠️ <strong>Attention :</strong> Si des clés manquent, la fiche restera dans "Clés en circulation"
+                            </div>
+
+                            <div class="form-group">
+                                <label for="return-missing-keys-comment">Commentaire sur les clés manquantes *</label>
+                                <textarea id="return-missing-keys-comment" class="form-control" rows="3" placeholder="Décrivez quelles clés manquent et les raisons..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>📸 Photo des clés rendues (pour comparaison) *</label>
+                                <div class="photo-section">
+                                    <button type="button" id="start-camera-return-partial" class="btn btn-primary" onclick="startCameraReturnPartial()">
+                                        📷 Démarrer la caméra
+                                    </button>
+                                    <video id="video-return-partial" class="photo-preview" autoplay playsinline webkit-playsinline style="display: none;"></video>
+                                    <button type="button" id="take-photo-return-partial" class="btn btn-success" onclick="takePhotoReturnPartial()" style="display: none;">
+                                        📸 Prendre la photo
+                                    </button>
+                                    <canvas id="canvas-return-partial" style="display: none;"></canvas>
+                                    <img id="photo-preview-return-partial" class="photo-preview" style="display: none;">
+                                    <button type="button" id="retake-photo-return-partial" class="btn btn-secondary" onclick="retakePhotoReturnPartial()" style="display: none;">
+                                        🔄 Reprendre la photo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeQuickReturnModal()">Annuler</button>
+                    <button class="btn btn-success" onclick="confirmQuickReturn()">✅ Valider le Retour</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ajouter/Modifier Contact -->
+        <div id="modal-contact" class="modal">
+            <div class="modal-content">
+                <h2 id="modal-contact-title">➕ Ajouter un Contact</h2>
+                
+                <form id="contact-form" onsubmit="saveContactFromModal(event)">
+                    <div class="form-group">
+                        <label for="modal-contact-nom">Nom *</label>
+                        <input type="text" id="modal-contact-nom" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-contact-prenom">Prénom *</label>
+                        <input type="text" id="modal-contact-prenom" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-contact-entreprise">Entreprise</label>
+                        <input type="text" id="modal-contact-entreprise" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-contact-telephone">Téléphone *</label>
+                        <input type="tel" id="modal-contact-telephone" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-contact-email">Email</label>
+                        <input type="email" id="modal-contact-email" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-contact-notes">Notes</label>
+                        <textarea id="modal-contact-notes" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <input type="hidden" id="modal-contact-id" value="">
+                    
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="closeContactModal()">Annuler</button>
+                        <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
